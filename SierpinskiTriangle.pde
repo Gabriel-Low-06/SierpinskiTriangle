@@ -8,7 +8,7 @@ void setup() {
 float speed;
 float timekeeper;
 int oldmill=0;
-Asteroid[] openrocks = new Asteroid[20]; //declare asteroids and stars
+Asteroid[] openrocks = new Asteroid[7]; //declare asteroids and stars
 
 void sierpinski(int x, int y, int lens, int end, int direction) {
   if (lens<=end) {
@@ -25,14 +25,15 @@ void draw() {
   timekeeper+=speed*(millis()-oldmill);
   oldmill=millis();
   float crunchspeed = 1-((1-speed)*.35);
-  if (mousePressed)
+  if (mousePressed) {
     speed+=.003;
-  else
+  } else {
     speed*=.99;
+  }
   //background(105/crunchspeed, 105/crunchspeed, 255/crunchspeed, 50);
   fill(105/crunchspeed, 105/crunchspeed, 255/crunchspeed, 55);
   pushMatrix();
-  translate(400,400,-10);
+  translate(400, 400, -10);
   box(850, 850, 1);
   popMatrix();
   pushMatrix();
@@ -43,8 +44,8 @@ void draw() {
   translate(-400, -400 + (timekeeper%2000/10));
   stroke(255, 255, 255);
   strokeWeight(1);
-  sierpinski(0, 0, 800, constrain((int)pow(2, time), 5, 10000), 1);
-  sierpinski(600, 400, 400, constrain((int)pow(2, (10-time)), 5, 10000), -1);
+  sierpinski(0, 0, 800, constrain((int)pow(2, time), 10, 10000), 1);
+  sierpinski(600, 400, 400, constrain((int)pow(2, (10-time)), 10, 10000), -1);
   popMatrix();
   noFill();
   for (int q=0; q<openrocks.length; q++) {
@@ -63,12 +64,12 @@ class Asteroid {
   float[]spin = new float[3];
   int[] config = new int[3];  
   Asteroid(boolean far) {
-    int[] loadcon = {(int)(random(50, 200)), (int)(random(50, 200)), (int)(random(50, 200))};
+    int[] loadcon = {(int)(random(20, 180)), (int)(random(20, 180)), (int)(random(20, 180))};
     float[] loadrot = {random(0, 8), random(0, 8), random(0, 8)};
     float[] loadtor = {random(-.1, .1), random(-.1, .1), random(-.1, .1)};
-    int[] loadcoord = {(int)(random(0, 800)), (int)(random(0, 800)), (int)(random(-5000, 0))};
+    int[] loadcoord = {(int)(random(0, 800)), (int)(random(0, 800)), (int)(random(-100, 0))};
     if (far==true) { //if its respawning, respawn in middle
-      loadcoord[2]=(int)random(-7000, -6000);
+      loadcoord[2]=(int)random(-100, -150);
     }
     spin=loadrot; //initalize variables from randomly generated
     torque=loadtor;
@@ -77,7 +78,8 @@ class Asteroid {
     velocity[2]=(int)speed*10;
   }
   void paint() {
-    //velocity[2]=(int)speed*10; //update velocity based on global speed
+    if(speed>1){
+    velocity[2]=(int)speed*10; //update velocity based on global speed
     pushMatrix();
     translate(coordinates[0], coordinates[1], coordinates[2]); //move asteroid to location in 3d space
     rotateX(spin[0]); 
@@ -90,5 +92,6 @@ class Asteroid {
     strokeWeight(5);
     box(config[0],config[2],config[1]); //draw asteroid
     popMatrix();
+  }
   }
 }
